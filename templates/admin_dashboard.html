@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Administrador Dashboard</title>
+</head>
+<body>
+    <h1>Bienvenido, {{ session['user_name'] }}</h1>
+    <nav>
+        <a href="{{ url_for('citas.manage_citas') }}">Gestionar Citas</a>
+        <a href="{{ url_for('historiales.manage_historiales') }}">Gestionar Historiales</a>
+        <a href="{{ url_for('usuarios.manage_usuarios') }}">Gestionar Usuarios</a>
+        <a href="{{ url_for('auth.logout') }}">Cerrar Sesión</a>
+    </nav>
+</body>
+</html>

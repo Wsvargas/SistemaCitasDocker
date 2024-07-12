@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gestión de Usuarios</title>
+</head>
+<body>
+    <h1>Gestión de Usuarios</h1>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul>
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    <form method="post" action="{{ url_for('usuarios.manage_usuarios') }}">
+        <input type="text" name="search" placeholder="Buscar por ID o nombre">
+        <button type="submit" name="buscar">Buscar</button>
+    </form>
+    <form method="post" action="{{ url_for('usuarios.manage_usuarios') }}">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" required>
+        <br>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+        <br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        <br>
+        <label for="rol">Rol:</label>
+        <select id="rol" name="rol">
+            <option value="doctor">Doctor</option>
+            <option value="paciente">Paciente</option>
+            <option value="administrador">Administrador</option>
+        </select>
+        <br>
+        <label for="numero_cedula">Número de Cédula:</label>
+        <input type="text" id="numero_cedula" name="numero_cedula" required>
+        <br>
+        <button type="submit">Agregar Usuario</button>
+    </form>
+    <h2>Usuarios Existentes</h2>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Username</th>
+            <th>Rol</th>
+            <th>Número de Cédula</th>
+            <th>Acciones</th>
+        </tr>
+        {% for usuario in usuarios %}
+        <tr>
+            <td>{{ usuario.id_usuario }}</td>
+            <td>{{ usuario.nombre }}</td>
+            <td>{{ usuario.username }}</td>
+            <td>{{ usuario.rol }}</td>
+            <td>{{ usuario.numero_cedula }}</td>
+            <td>
+                <form method="post" action="{{ url_for('usuarios.delete_usuario', id_usuario=usuario.id_usuario) }}" style="display:inline;">
+                    <button type="submit">Eliminar</button>
+                </form>
+                <a href="{{ url_for('usuarios.edit_usuario', id_usuario=usuario.id_usuario) }}"><button>Editar</button></a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

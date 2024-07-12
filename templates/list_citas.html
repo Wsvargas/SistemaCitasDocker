@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mis Citas Médicas</title>
+</head>
+<body>
+    <h1>Mis Citas Médicas</h1>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Paciente</th>
+            <th>Doctor</th>
+            <th>Fecha</th>
+            <th>Hora</th>
+            <th>Motivo</th>
+            <th>Estado</th>
+        </tr>
+        {% for cita in citas %}
+        <tr>
+            <td>{{ cita.id_cita }}</td>
+            <td>{{ cita.id_usuario_paciente }}</td>
+            <td>{{ cita.id_usuario_doctor }}</td>
+            <td>{{ cita.fecha }}</td>
+            <td>{{ cita.hora }}</td>
+            <td>{{ cita.motivo }}</td>
+            <td>{{ cita.estado }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

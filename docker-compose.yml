@@ -1,0 +1,78 @@
+version: '3.8'
+
+services:
+  mysql_citas:
+    image: mysql:latest
+    container_name: mysql_citas
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: citas_medicas
+    volumes:
+      - mysql_citas_data:/var/lib/mysql
+      - ./initdb/citas_medicas.sql:/docker-entrypoint-initdb.d/citas_medicas.sql
+    ports:
+      - "3307:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mysql_historial:
+    image: mysql:latest
+    container_name: mysql_historial
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: historialmedico
+    volumes:
+      - mysql_historial_data:/var/lib/mysql
+      - ./initdb/historialmedico.sql:/docker-entrypoint-initdb.d/historialmedico.sql
+    ports:
+      - "3308:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: .
+    container_name: web
+    ports:
+      - "5000:5000"
+    environment:
+      FLASK_ENV: development
+      MYSQL_CITAS_HOST: mysql_citas
+      MYSQL_CITAS_USER: root
+      MYSQL_CITAS_PASSWORD: root
+      MYSQL_CITAS_DB: citas_medicas
+      MYSQL_HISTORIAL_HOST: mysql_historial
+      MYSQL_HISTORIAL_USER: root
+      MYSQL_HISTORIAL_PASSWORD: root
+      MYSQL_HISTORIAL_DB: historialmedico
+    depends_on:
+      mysql_citas:
+        condition: service_healthy
+      mysql_historial:
+        condition: service_healthy
+
+  notifications:
+    build:
+      context: ./config
+      dockerfile: Dockerfile.notifications
+    container_name: notifications
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - EMAIL_SENDER=willy.toys14@gmail.com
+      - EMAIL_PASSWORD=hbek ocak ijvo quha
+      - SMTP_SERVER=smtp.gmail.com
+      - SMTP_PORT=587
+      - EMAIL_RECIPIENT=wstevenvargas@gmail.com
+    depends_on:
+      - mysql_citas
+      - mysql_historial
+
+volumes:
+  mysql_citas_data:
+  mysql_historial_data:
